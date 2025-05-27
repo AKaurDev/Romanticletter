@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Romantic Date & Letter Surprise</title>
+
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;700&display=swap');
+
+
+    :root {
+      --primary-color: #d6336c;
+      --background-gradient-start: #ffd1dc;
+      --background-gradient-end: #ffe4e1;
+      --text-color: #4b2e3b;
+      --shadow-color: rgba(214, 51, 108, 0.3);
+      --bg-overlay-color: rgba(255, 255, 255, 0.85);
+      --accent-color: #ff69b4;
+    }
+
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      background: linear-gradient(135deg, var(--background-gradient-start), var(--background-gradient-end));
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text-color);
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+
+    .page {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 30px 20px;
+      text-align: center;
+      border-radius: 0;
+      box-sizing: border-box;
+      transition: opacity 1.2s ease;
+      opacity: 1;
+      z-index: 1;
+    }
+    .page.content-box {
+      background: var(--bg-overlay-color);
+      max-width: 600px;
+      border-radius: 25px;
+      box-shadow: 0 10px 30px rgba(215, 30, 88, 0.2);
+      padding: 40px 30px;
+    }
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+
+    h1, p {
+      margin: 0 0 20px 0;
+    }
+    /* First page styles */
+    #page1 {
+      background: transparent;
+    }
+    #page1 .content-box {
+      background: transparent;
+      box-shadow: none;
+      padding: 0;
+    }
+    #page1-title {
+      font-family: 'Great Vibes', cursive;
+      font-size: 4rem;
+      color: var(--primary-color);
+      animation: fadeInSlideDown 2s ease forwards;
+    }
+    #page1-desc {
+      font-size: 1.4rem;
+      line-height: 1.4;
+      color: var(--text-color);
+      animation: fadeInSlideUp 2.5s ease forwards;
+      animation-delay: 1s;
+    }
+    #next-btn {
+      background-color: var(--primary-color);
+      border: none;
+      padding: 14px 40px;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 5px 15px rgba(214,51,108,0.4);
+      user-select: none;
+      animation: fadeInScale 3s ease forwards;
+      animation-delay: 2s;
+    }
+    #next-btn:hover {
+      background-color: #a83250;
+    }
+
+
+    /* Second page styles */
+    #page2 .content-box {
+      background: var(--bg-overlay-color);
+      max-width: 600px;
+      border-radius: 25px;
+      box-shadow: 0 10px 30px rgba(215, 30, 88, 0.2);
+      padding: 40px 30px;
+    }
+    #second-page-text {
+      font-family: 'Great Vibes', cursive;
+      font-size: 3rem;
+      color: var(--primary-color);
+      margin-bottom: 30px;
+      opacity: 0;
+      animation: fadeInSlideUp 2s ease forwards;
+      animation-delay: 0.3s;
+      min-height: 90px;
+    }
+
+
+    .envelope-container {
+      width: 180px;
+      height: 120px;
+      margin: 0 auto 30px auto;
+      opacity: 0;
+      animation: fadeInScale 2.5s ease forwards, bounce 2.5s ease-in-out infinite;
+      animation-delay: 1s;
+      position: relative;
+      cursor: default;
+    }
+    .envelope {
+      width: 180px;
+      height: 120px;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+      border-radius: 12px;
+      box-shadow: 0 8px 15px rgba(214, 51, 108, 0.3);
+      position: relative;
+      overflow: visible;
+    }
+    .flap {
+      width: 0;
+      height: 0;
+      border-left: 90px solid transparent;
+      border-right: 90px solid transparent;
+      border-bottom: 70px solid #f67280;
+      position: absolute;
+      top: -70px;
+      left: 0;
+      border-radius: 0 0 15px 15px;
+      box-shadow: 0 4px 6px rgba(230, 96, 115, 0.5);
+      transform-origin: center bottom;
+      animation: flapMove 4s ease-in-out infinite;
+    }
+    .letter-lines {
+      position: absolute;
+      top: 45px;
+      left: 20px;
+      right: 20px;
+      height: 10px;
+      background: repeating-linear-gradient(
+        to right,
+        #fffafa,
+        #fffafa 5px,
+        #ffdede 5px,
+        #ffdede 10px
+      );
+      border-radius: 3px;
+      box-shadow: inset 0 0 5px #f8b8c8;
+    }
+    .letter-lines:nth-child(2) {
+      top: 65px;
+      height: 12px;
+      width: 140px;
+      margin-left: 20px;
+      background: repeating-linear-gradient(
+        to right,
+        #fffafa,
+        #fffafa 8px,
+        #ffced6 8px,
+        #ffced6 16px
+      );
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0);}
+      50% { transform: translateY(-12px);}
+    }
+    @keyframes flapMove {
+      0%, 100% { transform: rotate(0deg);}
+      50% { transform: rotate(-10deg);}
+    }
+    #letter-message {
+      font-size: 1.3rem;
+      color: var(--text-color);
+      font-weight: 600;
+      margin-bottom: 35px;
+      animation: fadeInSlideDown 2.3s ease forwards;
+      opacity: 0;
+      animation-delay: 1.8s;
+    }
+    #open-letter-btn {
+      background-color: var(--primary-color);
+      border: none;
+      padding: 14px 36px;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 5px 15px rgba(214,51,108,0.4);
+      user-select: none;
+      animation: fadeInScale 3s ease forwards;
+      animation-delay: 2.6s;
+      display: inline-block;
+    }
+    #open-letter-btn:hover {
+      background-color: #a83250;
+    }
+    #wife-image {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 8px 20px rgba(214, 51, 108, 0.4);
+      margin: 0 auto 20px auto;
+      opacity: 0;
+      animation: fadeInScale 2.5s ease forwards;
+      animation-delay: 1.2s;
+      border: 4px solid var(--primary-color);
+      user-select: none;
+    }
+    #letter {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      width: 90%;
+      max-width: 480px;
+      background: white;
+      border-radius: 25px;
+      box-shadow: 0 15px 40px rgba(214,51,108,0.5);
+      padding: 30px 35px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      z-index: 100;
+      font-family: 'Montserrat', sans-serif;
+      user-select: text;
+    }
+    #letter.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    #letter h2 {
+      color: var(--primary-color);
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.8rem;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+    #letter p {
+      font-size: 1.15rem;
+      color: var(--text-color);
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+    #close-letter-btn {
+      margin-top: 25px;
+      background-color: var(--primary-color);
+      border: none;
+      padding: 12px 32px;
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 30px;
+      cursor: pointer;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 5px 15px rgba(214,51,108,0.4);
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    #close-letter-btn:hover {
+      background-color: #a83250;
+    }
+    #overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.25);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      z-index: 99;
+    }
+    #overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    @keyframes fadeInSlideDown {
+      from {opacity:0; transform: translateY(-40px);}
+      to {opacity:1; transform: translateY(0);}
+    }
+    @keyframes fadeInSlideUp {
+      from {opacity:0; transform: translateY(40px);}
+      to {opacity:1; transform: translateY(0);}
+    }
+    @keyframes fadeInScale {
+      from {opacity:0; transform: scale(0.85);}
+      to {opacity:1; transform: scale(1);}
+    }
+    @media (max-width: 480px){
+      h1#second-page-text {
+        font-size: 2.4rem;
+      }
+      #letter h2 {
+        font-size: 2rem;
+      }
+      #letter {
+        padding: 25px 20px;
+      }
+      #letter p {
+        font-size: 1rem;
+      }
+      .envelope-container {
+        width: 140px;
+        height: 95px;
+      }
+      .envelope {
+        width: 140px;
+        height: 95px;
+      }
+      .flap {
+        border-left: 70px solid transparent;
+        border-right: 70px solid transparent;
+        border-bottom: 55px solid #f67280;
+        top: -55px;
+      }
+      .letter-lines {
+        top: 35px;
+      }
+      .letter-lines:nth-child(2) {
+        top: 50px;
+      }
+      #wife-image {
+        width: 110px;
+        height: 110px;
+        margin-bottom: 15px;
+      }
+      #next-btn {
+        font-size: 1rem;
+        padding: 12px 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- First page -->
+  <section id="page1" class="page" aria-labelledby="page1-title" aria-describedby="page1-desc">
+    <div class="content-box">
+      <h1 id="page1-title" tabindex="0">Had a Hard, Tiring Day?</h1>
+      <p id="page1-desc" tabindex="0">
+        I know things can get overwhelming sometimes.<br />
+        But I have a little surprise for you to brighten your evening.
+      </p>
+      <button id="next-btn" aria-label="Show me the surprise!">Show Me ❤️</button>
+    </div>
+  </section>
+
+  <!-- Second page -->
+  <section id="page2" class="page hidden" aria-live="polite" aria-atomic="true" aria-labelledby="second-page-text" role="main">
+    <div class="content-box">
+      <h1 id="second-page-text" tabindex="0">I am so proud to call you my man</h1>
+      <div class="envelope-container" aria-hidden="true" title="A letter has just arrived!">
+        <div class="envelope" role="img" aria-label="Cute animated love letter envelope">
+          <div class="flap"></div>
+          <div class="letter-lines"></div>
+          <div class="letter-lines" style="top: 65px; width: 140px; margin-left: 20px; background: repeating-linear-gradient(to right, #fffafa, #fffafa 8px, #ffced6 8px, #ffced6 16px);"></div>
+        </div>
+      </div>
+&nbsp;
+&nbsp;
+
+      <p id="letter-message" tabindex="0">There is a letter for you from your Wifey</p>
+&nbsp;
+&nbsp;
+
+      <button id="open-letter-btn" aria-haspopup="dialog" aria-controls="letter">Open the letter 💌</button>
+    </div>
+  </section>
+&nbsp;
+&nbsp;
+
+  <!-- Letter popup -->
+  <div id="overlay" tabindex="-1" hidden></div>
+  <section id="letter" role="dialog" aria-modal="true" aria-labelledby="letter-title" aria-describedby="letter-content" hidden>
+    <h2 id="letter-title">My Dearest Jaana,</h2>
+    <p id="letter-content">
+      I know that being away from me makes you feel a little low sometimes, but I need you to know—I’m so incredibly proud of you.<br /><br />
+      I’m proud of the way you keep showing up, every. single. day.<br />
+      I’m proud of the tough choices you’ve made, and how you held your ground, even when it hurt.<br />
+      I’m proud of how you never gave up on yourself, how you’ve kept fighting for the things—and people—you love.<br />
+      I’m proud of the way you still find reasons to smile, even after all the storms you’ve faced.<br />
+      I’m proud of the light you keep searching for, even when all you’ve seen is darkness.<br />
+      I’m just… proud of you. Of how far you’ve come. And even more excited for where you’re going.<br /><br />
+      I know sometimes you can’t give me time—and yes, it aches, not because I’m upset that you’re busy, but because I miss us. I feel a little lonely without our little moments, because you’re the one I share everything with. To me, you’re my everything.<br /><br />
+      Take care of me the way a father would.<br />
+      Teach me like a wise teacher.<br />
+      Protect me like a mother does.<br />
+      Love me like a soulmate, a husband, a best friend.<br />
+      Be you. That’s all I’ll ever ask.<br /><br />
+      So, today, jaan, can we steal a soft moment together? Just you lying down, and me reading to you—your favorite book. Let me bring the calm back to your day, even if just for a little while.<br /><br />
+      Pretty please?<br />
+      With all my love,<br />
+      Yours. Always.<br />
+      Arshu ❤️
+    </p>
+    <button id="close-letter-btn">Close</button>
+  </section>
+
+
+
+  <script>
+    const page1 = document.getElementById('page1');
+    const page2 = document.getElementById('page2');
+    const nextBtn = document.getElementById('next-btn');
+    const openLetterBtn = document.getElementById('open-letter-btn');
+    const letter = document.getElementById('letter');
+    const closeLetterBtn = document.getElementById('close-letter-btn');
+    const overlay = document.getElementById('overlay');
+
+
+    // Navigate from page1 to page2
+    nextBtn.addEventListener('click', () => {
+      page1.classList.add('hidden');
+      setTimeout(() => {
+        page2.classList.remove('hidden');
+      }, 1200);
+    });
+
+    // Open letter popup
+    openLetterBtn.addEventListener('click', () => {
+      letter.hidden = false;
+      overlay.hidden = false;
+      setTimeout(() => {
+        letter.classList.add('visible');
+        overlay.classList.add('visible');
+        letter.focus();
+      }, 10);
+    });
+
+    // Close letter popup function
+    function closeLetter() {
+      letter.classList.remove('visible');
+      overlay.classList.remove('visible');
+      setTimeout(() => {
+        letter.hidden = true;
+        overlay.hidden = true;
+        openLetterBtn.focus();
+      }, 400);
+    }
+
+
+    closeLetterBtn.addEventListener('click', closeLetter);
+    overlay.addEventListener('click', closeLetter);
+
+
+    // Close letter on ESC key
+    document.addEventListener('keydown', (e) => {
+      if(e.key === "Escape" && !letter.hidden) {
+        closeLetter();
+      }
+    });
+  </script>
+</body>
+</html>
+
